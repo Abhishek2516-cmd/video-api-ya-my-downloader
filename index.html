@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auraprime Downloader</title>
+    <style>
+        body { background: #121212; color: white; font-family: Arial; text-align: center; padding: 20px; }
+        input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 8px; border: none; }
+        button { background: #00e676; color: black; padding: 15px 30px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 90%; }
+        #status { margin-top: 20px; color: #00e676; }
+        .footer-ad { position: fixed; bottom: 0; left: 0; width: 100%; height: 50px; background: #222; }
+    </style>
+</head>
+<body>
+    <h2>Auraprime Video Music</h2>
+    <input type="text" id="link" placeholder="Paste link here (YT, FB, Insta)...">
+    <br>
+    <button onclick="startProcess()">DOWNLOAD VIDEO</button>
+    <div id="status">Ready to download</div>
+
+    <div class="footer-ad">Banner Ad Area</div>
+
+    <script>
+        function startProcess() {
+            // App ko signal dena Interstitial Ad dikhane ke liye
+            if(window.Android) { window.Android.showInterstitial(); }
+            
+            let videoUrl = document.getElementById('link').value;
+            let status = document.getElementById('status');
+            
+            if(!videoUrl) { alert("Link toh dalo!"); return; }
+            
+            status.innerHTML = "Processing... Ad dekhne ke baad download shuru hoga.";
+            
+            fetch(`https://video-api-ya-my-downloader-2.onrender.com/dl?url=${videoUrl}`)
+                .then(res => res.json())
+                .then(data => {
+                    if(data.url) {
+                        window.location.href = data.url;
+                        status.innerHTML = "Download Started!";
+                    }
+                })
+                .catch(err => status.innerHTML = "Error: API not responding");
+        }
+    </script>
+</body>
+</html>
