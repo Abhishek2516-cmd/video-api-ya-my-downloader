@@ -1,19 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auraprime Downloader</title>
+    <style>
+        body { background: #121212; color: white; font-family: Arial; text-align: center; padding: 20px; }
+        input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 8px; border: none; outline: none; }
+        button { background: #00e676; color: black; padding: 15px 30px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 90%; }
+        #status { margin-top: 20px; font-weight: bold; }
+        .footer-ad { position: fixed; bottom: 0; left: 0; width: 100%; height: 50px; background: #222; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h2>Auraprime Video Music</h2>
+    <input type="text" id="link" placeholder="Paste Instagram, YT or FB link...">
+    <br>
+    <button onclick="startProcess()">DOWNLOAD NOW</button>
+    <div id="status">Ready to download</div>
+
+    <div class="footer-ad">Banner Ad Area</div>
+
+    <script>
         async function startProcess() {
             let videoUrl = document.getElementById('link').value;
             let status = document.getElementById('status');
             
             if(!videoUrl) { alert("Pehle link toh dalo!"); return; }
             
-            // Interstitial Ad Trigger (Sirf App ke liye)
-            if(window.Android) { try { window.Android.showInterstitial(); } catch(e) { console.log("Ad Error"); } }
+            // App Ads Trigger
+            if(window.Android && window.Android.showInterstitial) { 
+                try { window.Android.showInterstitial(); } catch(e) { console.log("Ad error"); } 
+            }
 
             status.innerHTML = "🔍 Checking Link... Please wait.";
             status.style.color = "yellow";
             
             try {
-                // API URL ko sahi format mein call karna
+                // Sahi API calling
                 const apiUrl = `https://video-api-ya-my-downloader-2.onrender.com/dl?url=${encodeURIComponent(videoUrl)}`;
-                
                 const response = await fetch(apiUrl);
                 const data = await response.json();
 
@@ -22,12 +46,14 @@
                     status.style.color = "#00e676";
                     window.location.href = data.url; 
                 } else {
-                    status.innerHTML = "❌ Error: Video link not supported or expired.";
+                    status.innerHTML = "❌ Error: Video not found or link private.";
                     status.style.color = "red";
                 }
             } catch (err) {
-                console.error(err);
-                status.innerHTML = "⚠️ API Error: Make sure your Render server is awake.";
+                status.innerHTML = "⚠️ API Error: Server is waking up, try again in 10 seconds.";
                 status.style.color = "orange";
             }
         }
+    </script>
+</body>
+</html>
